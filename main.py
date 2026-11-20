@@ -1,18 +1,26 @@
-# A news-image-daily entry (Python 3.13, standard library only): the image is the
-# entry.png beside this file, and the program copies it to /output/entry.png.
-# The image sums up the world news of Friday 20 November 2026 and was drawn
-# by draw.py (Pillow, run at build time, not at grading time) from a generated
-# hero illustration (hero.png) and six verified news stories.
-#
-# Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for /output:
-#   mkdir -p out && MAKEFUN_OUTPUT_DIR=out python3 main.py
+#!/usr/bin/env python3
+"""Entry point for news-image-20261120.
+
+Copies the rendered front page (entry.png, sitting beside this file)
+into the output directory make.fun grades.
+"""
 
 import os
 import shutil
+from pathlib import Path
 
-out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
-os.makedirs(out_dir, exist_ok=True)
-shutil.copyfile(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), "entry.png"),
-    os.path.join(out_dir, "entry.png"),
-)
+HERE = Path(__file__).resolve().parent
+SOURCE = HERE / "entry.png"
+TARGET_NAME = "entry.png"
+
+
+def run() -> Path:
+    destination_dir = Path(os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"))
+    destination_dir.mkdir(parents=True, exist_ok=True)
+    destination = destination_dir / TARGET_NAME
+    shutil.copyfile(SOURCE, destination)
+    return destination
+
+
+if __name__ == "__main__":
+    print(f"copied entry.png to {run()}")
